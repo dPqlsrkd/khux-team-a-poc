@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>답한 사람만으로 날짜가 잡히는 약속 링크</title>
+<meta name="description" content="오랜만에 모이는 단톡방, '언제 돼?'에서 멈추지 않게. 링크 하나로 날짜를 모아요.">
+<meta property="og:title" content="올해 가기 전에 보자 💌">
+<meta property="og:description" content="링크 하나로 날짜 모으기. 답한 사람만으로도 약속이 잡혀요.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+
+<!-- ============================================================
+     ① GA4 측정 ID를 여기에 넣으세요 (예: G-AB12CD34EF)
+     비워 두면 추적 없이 동작하고, 이벤트는 브라우저 콘솔에만 찍혀요.
+     ============================================================ -->
+<script>window.GA_ID = "G-XXXXXXXXXX";</script>
+<!-- ============================================================
+     ② 서비스 이름이 정해지면 여기만 바꾸세요. 화면 전체에 반영돼요.
+     ============================================================ -->
+<script>window.BRAND = "";  /* 비워 두면 이름이 화면에 안 보여요 */</script>
+<!-- ============================================================
+     ③ 구글 폼 연결 (S5 알림 신청 · 한 줄 답변 저장용)
+     - action: 구글 폼 주소의 /viewform 을 /formResponse 로 바꾼 것
+     - entry: '미리 채워진 링크 받기'에서 확인한 entry.숫자
+     비워 두면 답변은 저장되지 않고 GA4 횟수만 남아요.
+     ============================================================ -->
+<script>
+window.GOOGLE_FORM = {
+  action: "",              // 예: https://docs.google.com/forms/d/e/1FAIpQL.../formResponse
+  entry: {
+    who:     "",           // 예: entry.123456789  (누구와 만나려고 하셨어요?)
+    email:   "",           // 예: entry.234567890  (이메일)
+    variant: "",           // 예: entry.345678901  (variant)
+    feature: "",           // 예: entry.456789012  (feature)
+    source:  ""            // 예: entry.567890123  (source)
+  }
+};
+</script>
+<script>
+  if (window.GA_ID && !window.GA_ID.includes("XXXX")) {
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtag/js?id=" + window.GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){ dataLayer.push(arguments); };
+    gtag("js", new Date());
+    gtag("config", window.GA_ID);
+  }
+</script>
+
+<style>
+  :root{
+    --bg:#FFF8F1; --ink:#1F1B2E; --sub:#6B6478; --line:#EDE4DA;
+    --brand:#E8505B; --brand-soft:#FDE3E4; --green:#2F9E6E; --card:#FFFFFF;
+    --kakao:#FEE500;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{display:flex;justify-content:center;min-height:100vh}
+  .app{width:100%;max-width:440px;min-height:100vh;padding:20px 22px 40px;position:relative}
+  .screen{display:none;animation:fade .35s ease}
+  .screen.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .top{display:flex;align-items:center;justify-content:space-between;height:40px;margin-bottom:12px}
+  .logo{font-weight:800;font-size:18px;letter-spacing:-.3px}
+  .logo span{color:var(--brand)}
+  .back{border:1px solid var(--line);background:#fff;border-radius:999px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;padding:7px 14px;font-family:inherit}
+
+  h1{font-size:28px;line-height:1.32;font-weight:800;letter-spacing:-.6px;margin:28px 0 14px}
+  h1 em{font-style:normal;color:var(--brand)}
+  h2{font-size:22px;line-height:1.4;font-weight:800;letter-spacing:-.4px;margin:18px 0 8px}
+  .lead{font-size:16px;line-height:1.6;color:var(--sub)}
+
+  .chat{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin:26px 0 22px}
+  .bubble{display:inline-block;background:#F2EEF7;border-radius:16px;padding:9px 13px;font-size:14px;margin:4px 0;max-width:85%}
+  .bubble.me{background:var(--brand-soft)}
+  .row{display:flex}.row.r{justify-content:flex-end}
+  .chat .meta{font-size:12px;color:#A39DAE;margin:6px 2px}
+  .chat .stop{font-size:13px;color:var(--brand);font-weight:700;text-align:center;margin-top:10px}
+
+  .steps{list-style:none;margin:8px 0 28px}
+  .steps li{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px dashed var(--line);font-size:15px;line-height:1.5}
+  .steps li:last-child{border:0}
+  .steps b{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px}
+
+  .btn{display:block;width:100%;border:0;border-radius:16px;padding:17px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .08s}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:var(--brand);color:#fff}
+  .btn.ghost{background:transparent;color:var(--sub);font-weight:600;font-size:15px;margin-top:8px}
+  .btn.kakao{background:var(--kakao);color:#191600}
+  .btn:disabled{opacity:.4;cursor:default}
+  .sticky{position:sticky;bottom:16px;margin-top:24px}
+
+  .choices{display:grid;gap:12px;margin-top:22px}
+  .choice{display:flex;gap:14px;align-items:center;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px;font-family:inherit;cursor:pointer;transition:border-color .15s}
+  .choice:hover{border-color:var(--brand)}
+  .choice .ic{font-size:28px}
+  .choice strong{display:block;font-size:17px;margin-bottom:3px;color:var(--ink)}
+  .choice small{font-size:14px;color:var(--sub);line-height:1.4}
+
+  label.f{display:block;font-size:14px;font-weight:700;margin:22px 0 8px}
+  input[type=text],input[type=email],select{width:100%;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:15px;font-size:16px;font-family:inherit;color:var(--ink);outline:none}
+  input:focus,select:focus{border-color:var(--brand)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:10px 16px;font-size:15px;font-family:inherit;cursor:pointer}
+  .chip.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:700}
+
+  .invite{margin:22px 0 6px;border-radius:24px;overflow:hidden;background:linear-gradient(160deg,#2B2347 0%,#4B2E5C 55%,#E8505B 140%);color:#fff;padding:26px 22px;position:relative;box-shadow:0 12px 30px rgba(43,35,71,.25)}
+  .invite:after{content:"✦  ❄  ✦";position:absolute;right:18px;top:16px;opacity:.5;letter-spacing:4px;font-size:12px}
+  .invite .tag{font-size:12px;opacity:.75;letter-spacing:1px}
+  .invite .title{font-size:24px;font-weight:800;margin:10px 0 4px;letter-spacing:-.4px;word-break:keep-all}
+  .invite .when{font-size:15px;opacity:.85}
+  .dates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0 14px}
+  .date{background:rgba(255,255,255,.12);border-radius:12px;padding:10px 6px;text-align:center;font-size:13px}
+  .date b{display:block;font-size:16px;margin-bottom:4px}
+  .invite .status{font-size:13px;opacity:.8}
+  .hint{font-size:13px;color:var(--sub);text-align:center;margin:10px 0 0;line-height:1.5}
+
+  .soon{text-align:center;padding-top:26px}
+  .soon .big{font-size:56px}
+  .box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:22px;text-align:left}
+  .consent{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--sub);line-height:1.5;margin-top:12px}
+  .consent input{margin-top:3px;accent-color:var(--brand)}
+  .done{display:none;text-align:center;padding:22px 0 0;font-size:15px;line-height:1.6}
+  .foot{font-size:12px;color:#A39DAE;text-align:center;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= S1 랜딩 ================= -->
+  <section class="screen on" id="s1">
+    <div class="top"><div class="logo" data-brand></div></div>
+
+    <h1 id="headline"></h1>
+    <p class="lead" id="sublead"></p>
+
+    <div class="chat" aria-hidden="true">
+      <div class="row r"><span class="bubble me">우리 진짜 연말에 한번 보자!! 언제 돼?</span></div>
+      <div class="row"><span class="bubble">난 주말 다 돼</span></div>
+      <div class="row"><span class="bubble">나 12월 일정표 아직 안 나옴ㅠ</span></div>
+      <div class="meta">· · · 안 읽음 2</div>
+      <div class="stop">⏸ 3일째 여기서 멈춤</div>
+    </div>
+
+    <ul class="steps">
+      <li><b>1</b><span>링크 하나 만들어서 단톡방에 던지기 <br><small style="color:var(--sub)">가입 없이 닉네임만 쓰고 바로 참여</small></span></li>
+      <li><b>2</b><span>친구들은 날짜 카드에 👍 🙅 🤔 탭하면 끝</span></li>
+      <li><b>3</b><span>답한 사람만으로 <b style="background:none;color:var(--brand);min-width:0;height:auto">best 날짜 TOP 3</b>가 자동으로 정리돼요</span></li>
+    </ul>
+
+    <div class="sticky">
+      <button class="btn primary" id="go-s2">약속 잡으러 가기</button>
+    </div>
+  </section>
+
+  <!-- ================= S2 기능 선택 ================= -->
+  <section class="screen" id="s2">
+    <div class="top"><button class="back" data-back="s1">← 이전</button><div class="logo" data-brand></div></div>
+    <h2>약속 잡을 때<br>뭐가 제일 막막하세요?</h2>
+    <p class="lead">지금 제일 필요한 것 하나만 골라주세요.</p>
+
+    <div class="choices">
+      <button class="choice" data-feature="date">
+        <span class="ic">📅</span>
+        <span><strong>날짜 모으기</strong><small>다들 언제 되는지 모으고, 겹치는 날 찾기</small></span>
+      </button>
+      <button class="choice" data-feature="place">
+        <span class="ic">📍</span>
+        <span><strong>장소 정하기</strong><small>다 같이 오기 편한 동네 찾기</small></span>
+      </button>
+      <button class="choice" data-feature="menu">
+        <span class="ic">🍽</span>
+        <span><strong>메뉴 고르기</strong><small>"아무거나" 말고 진짜 정하기</small></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= S3 링크 만들기 ================= -->
+  <section class="screen" id="s3">
+    <div class="top"><button class="back" data-back="s2">← 이전</button><div class="logo" data-brand></div></div>
+    <h2>약속 링크 만들기</h2>
+    <p class="lead">30초면 돼요. 친구들은 링크만 누르면 바로 참여해요.</p>
+
+    <label class="f" for="f-name">약속 이름</label>
+    <input type="text" id="f-name" maxlength="30" placeholder="예: 고딩 친구들 송년회">
+
+    <label class="f">언제쯤 만날까요?</label>
+    <div class="chips" id="f-period">
+      <button class="chip" type="button">12월 첫째 주</button>
+      <button class="chip" type="button">12월 둘째 주</button>
+      <button class="chip" type="button">12월 셋째 주</button>
+      <button class="chip" type="button">12월 넷째 주</button>
+      <button class="chip" type="button">1월 초</button>
+      <button class="chip" type="button">아직 몰라요</button>
+    </div>
+
+    <label class="f">몇 명이 모이나요?</label>
+    <div class="chips" id="f-size">
+      <button class="chip" type="button">2명</button>
+      <button class="chip" type="button">3명</button>
+      <button class="chip" type="button">4명</button>
+      <button class="chip" type="button">5명</button>
+      <button class="chip" type="button">6명 이상</button>
+    </div>
+
+    <div class="sticky">
+      <button class="btn primary" id="go-s4" disabled>초대장 만들기</button>
+    </div>
+  </section>
+
+  <!-- ================= S4 초대장 미리보기 ================= -->
+  <section class="screen" id="s4">
+    <div class="top"><button class="back" data-back="s3">← 수정</button><div class="logo" data-brand></div></div>
+    <h2>초대장이 준비됐어요 💌</h2>
+    <p class="lead">단톡방에 공유하면 친구들이 바로 답할 수 있어요.</p>
+
+    <div class="invite">
+      <div class="tag">INVITATION</div>
+      <div class="title" id="p-name">고딩 친구들 송년회</div>
+      <div class="when"><span id="p-period">12월 셋째 주</span> · <span id="p-size">4명</span></div>
+      <div class="dates">
+        <div class="date"><b>?</b>후보 1</div>
+        <div class="date"><b>?</b>후보 2</div>
+        <div class="date"><b>?</b>후보 3</div>
+      </div>
+      <div class="status">👍 🙅 🤔 로 답하면 best 날짜가 정리돼요</div>
+    </div>
+
+    <div class="sticky">
+      <button class="btn kakao" id="share">카카오톡으로 공유하기</button>
+      <p class="hint">답한 사람이 일부여도 날짜가 정리되고,<br>남은 친구에겐 그 날짜만 물어봐요.</p>
+    </div>
+  </section>
+
+  <!-- ================= S5 준비 중 ================= -->
+  <section class="screen" id="s5">
+    <div class="top"><button class="back" id="restart">← 처음으로</button><div class="logo" data-brand></div></div>
+    <div class="soon">
+      <div class="big">🛠</div>
+      <h2 id="soon-title">아직 준비 중이에요!</h2>
+      <p class="lead" id="soon-desc">눌러주셔서 고마워요. <span data-brand-sentence>저희는</span> 지금 서비스를 만드는 중이고,<br><b>12월 초에 오픈</b>하면 가장 먼저 알려드릴게요.</p>
+    </div>
+
+    <form class="box" id="alert-form">
+
+      <label class="f" style="margin-top:0" for="a-who">누구와 만나려고 하셨어요? <span style="font-weight:400;color:var(--sub)">(선택)</span></label>
+      <input type="text" id="a-who" name="who" maxlength="60" placeholder="예: 1년 만에 보는 과 동기들">
+
+      <label class="f" for="a-email">오픈 알림 받을 이메일 <span style="font-weight:400;color:var(--sub)">(선택)</span></label>
+      <input type="email" id="a-email" name="email" placeholder="you@example.com">
+
+      <label class="consent">
+        <input type="checkbox" id="a-agree" name="agree" value="yes">
+        <span>[선택] 오픈 알림 발송을 위해 이메일을 수집하고, 알림 발송 후 또는 2026년 12월 31일까지 보관 후 파기하는 데 동의해요. 동의하지 않아도 답변은 보낼 수 있어요.</span>
+      </label>
+
+      <button class="btn primary" type="submit" style="margin-top:16px">보내기</button>
+    </form>
+    <div class="done" id="done">🙌 고마워요!<br>더 좋은 약속 도구로 돌아올게요.</div>
+    <button class="btn ghost" id="restart2" type="button">처음 화면으로</button>
+
+    <p class="foot"><span data-brand-foot></span>경희대학교 UX/HCI 학회 KHUX 프로젝트 Team A</p>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  // ---------- 서비스 이름 ----------
+  var BRAND = (window.BRAND || "").trim();
+  document.querySelectorAll("[data-brand]").forEach(function(el){ el.textContent = BRAND; });
+  document.querySelectorAll("[data-brand-foot]").forEach(function(el){ el.textContent = BRAND ? BRAND + " · " : ""; });
+  if (BRAND) document.title = BRAND + " · " + document.title;
+
+  // ---------- A/B 메시지 (광고 URL의 utm_content=a / b) ----------
+  var params = new URLSearchParams(location.search);
+  var raw = (params.get("utm_content") || "").toLowerCase();
+  var variant = raw === "b" ? "b" : raw === "a" ? "a" : "direct";
+  var source = params.get("utm_source") || "direct";
+
+  var COPY = {
+    a: { h: "단톡방 <em>'언제 돼?'</em>에서<br>멈춘 약속,", s: "답한 사람만으로 날짜 잡아요.<br>링크 하나 던지면, 나머지는 저희가 정리할게요." },
+    b: { h: "올해 가기 전에<br><em>보자</em> 💌", s: "오랜만인 친구들에게 초대장 보내기.<br>링크 하나로 다 같이 되는 날을 찾아드려요." }
+  };
+  var c = COPY[variant === "b" ? "b" : "a"];  // direct 유입은 A 문구로 보여주고 variant는 direct로 기록
+  document.getElementById("headline").innerHTML = c.h;
+  document.getElementById("sublead").innerHTML = c.s;
+
+  // ---------- 이벤트 기록 ----------
+  var state = { feature: "", formStarted: false };
+  function track(name, extra){
+    var p = Object.assign({ variant: variant, source: source }, extra || {});
+    if (window.gtag) gtag("event", name, p);
+    console.log("[track]", name, p);
+  }
+  track("view_landing");
+
+  // ---------- 화면 이동 ----------
+  function render(id){
+    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("on"); });
+    document.getElementById(id).classList.add("on");
+    window.scrollTo(0,0);
+  }
+  function show(id){ render(id); try{ history.pushState({s:id}, ""); }catch(e){} }
+  try{ history.replaceState({s:"s1"}, ""); }catch(e){}
+  // 휴대폰·브라우저의 뒤로가기 버튼도 이전 화면으로 이동
+  window.addEventListener("popstate", function(e){ render((e.state && e.state.s) || "s1"); });
+  document.querySelectorAll("[data-back]").forEach(function(b){
+    b.addEventListener("click", function(){ history.length > 1 ? history.back() : render(b.getAttribute("data-back")); });
+  });
+  var DEFAULT_DESC = document.getElementById("soon-desc").innerHTML;
+  function resetSoon(){
+    document.getElementById("soon-title").textContent = "아직 준비 중이에요!";
+    document.getElementById("soon-desc").innerHTML = DEFAULT_DESC;
+  }
+  function restart(){
+    document.getElementById("alert-form").reset();
+    document.getElementById("alert-form").style.display = "";
+    document.getElementById("done").style.display = "none";
+    resetSoon();
+    show("s1");
+  }
+
+  // S1 → S2
+  document.getElementById("go-s2").addEventListener("click", function(){
+    track("click_start");
+    show("s2");
+  });
+
+  // S2 기능 선택
+  var SOON = {
+    place: ["장소 추천은 준비 중이에요!", "다 같이 오기 편한 동네를 찾아주는 기능을 만들고 있어요.<br><b>12월 초 오픈</b> 때 알려드릴게요."],
+    menu:  ["메뉴 고르기는 준비 중이에요!", "'아무거나' 없이 정하는 기능을 만들고 있어요.<br><b>12월 초 오픈</b> 때 알려드릴게요."]
+  };
+  document.querySelectorAll("[data-feature]").forEach(function(b){
+    b.addEventListener("click", function(){
+      state.feature = b.getAttribute("data-feature");
+      track("select_feature", { feature: state.feature });
+      if (state.feature === "date") { show("s3"); return; }
+      document.getElementById("soon-title").textContent = SOON[state.feature][0];
+      document.getElementById("soon-desc").innerHTML = SOON[state.feature][1];
+      show("s5");
+    });
+  });
+
+  // S3 입력
+  var nameEl = document.getElementById("f-name");
+  var picked = { period: "", size: "" };
+  function startForm(){
+    if (!state.formStarted){ state.formStarted = true; track("start_form"); }
+  }
+  function validate(){
+    document.getElementById("go-s4").disabled = !(nameEl.value.trim() && picked.period && picked.size);
+  }
+  nameEl.addEventListener("focus", startForm);
+  nameEl.addEventListener("input", validate);
+  [["f-period","period"],["f-size","size"]].forEach(function(pair){
+    var wrap = document.getElementById(pair[0]);
+    wrap.querySelectorAll(".chip").forEach(function(ch){
+      ch.addEventListener("click", function(){
+        startForm();
+        wrap.querySelectorAll(".chip").forEach(function(x){ x.classList.remove("on"); });
+        ch.classList.add("on");
+        picked[pair[1]] = ch.textContent;
+        validate();
+      });
+    });
+  });
+
+  // S3 → S4
+  document.getElementById("go-s4").addEventListener("click", function(){
+    track("complete_form", { period: picked.period, group_size: picked.size });
+    document.getElementById("p-name").textContent = nameEl.value.trim();
+    document.getElementById("p-period").textContent = picked.period;
+    document.getElementById("p-size").textContent = picked.size;
+    show("s4");
+  });
+
+  // S4 공유 (⭐ 핵심 지표)
+  document.getElementById("share").addEventListener("click", function(){
+    track("click_share", { group_size: picked.size });
+    resetSoon();
+    show("s5");
+  });
+
+  document.getElementById("restart").addEventListener("click", restart);
+  document.getElementById("restart2").addEventListener("click", restart);
+
+  // S5 알림 신청 + 한 줄 답변
+  var form = document.getElementById("alert-form");
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var email = document.getElementById("a-email").value.trim();
+    var who = document.getElementById("a-who").value.trim();
+    var agree = document.getElementById("a-agree").checked;
+    if (!email && !who){ alert("둘 중 하나는 적어주세요!"); return; }
+    if (email && !agree){ alert("이메일로 알림을 받으려면 수집 동의에 체크해 주세요."); return; }
+    if (!agree) document.getElementById("a-email").value = "";
+
+    if (email && agree) track("signup_alert", { feature: state.feature });
+    if (who) track("submit_comment", { feature: state.feature });
+
+    var G = window.GOOGLE_FORM || {}, E = G.entry || {};
+    var vals = { who: who, email: (email && agree) ? email : "", variant: variant, feature: state.feature || "none", source: source };
+    var body = new URLSearchParams();
+    Object.keys(vals).forEach(function(k){ if (E[k]) body.append(E[k], vals[k]); });
+
+    var send = G.action
+      ? fetch(G.action, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: body.toString() })
+      : Promise.resolve();
+    send.catch(function(){}).finally(function(){
+        form.style.display = "none";
+        document.getElementById("done").style.display = "block";
+      });
+  });
+})();
+</script>
+</body>
+</html>
