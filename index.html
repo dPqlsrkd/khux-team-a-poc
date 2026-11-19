@@ -50,106 +50,21 @@ window.GOOGLE_FORM = {
 </script>
 
 <style>
-  /* 디자인 방향: 포스트잇 벽 — 겨울 아침 회청 바탕 위에 손으로 붙인 메모들 */
+  /* 디자인: 밤하늘 + 포스트잇 — 남보라 하늘 위에 불 켜진 메모들 */
   :root{
-    --bg:#EEF1F4; --ink:#232A3B; --sub:#4F5668; --line:#CBD2DC;
-    --brand:#B8323B; --brand-soft:#FFE0D2; --green:#2F9E6E; --card:#FFFFFF;
-    --kakao:#FEE500;
-    --butter:#FFE88A; --peach:#FFD3B8; --mint:#C8EBD8;
-    --shadow:0 1px 1px rgba(35,42,59,.10), 0 10px 18px -12px rgba(35,42,59,.45);
+    --bg:#262A66;
+    --ink:#2A2140; --sub:#4F4767; --line:#D9D2EE;
+    --brand:#B3303F; --card:#FFF6E8;
+    --butter:#FFE58A; --peach:#FFD3B8; --mint:#CDEBDD; --lav:#E3DDFB;
+    --pg:#FFF3E0; --pg-sub:#D5CFEF;
+    --shadow:0 1px 1px rgba(10,8,40,.3), 0 14px 22px -12px rgba(8,6,36,.8);
     --tap:52px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
-  body{display:flex;justify-content:center;min-height:100vh}
-  .app{width:100%;max-width:440px;min-height:100vh;padding:20px 20px 40px;position:relative}
-  .screen{display:none}
-  .screen.on{display:block;animation:fade .25s ease-out}
-  @keyframes fade{from{opacity:0}to{opacity:1}}
-  @media (prefers-reduced-motion:reduce){ .screen.on{animation:none} .btn{transition:none} }
-
-  :focus-visible{outline:3px solid var(--ink);outline-offset:3px}
-
-  .top{display:flex;align-items:center;justify-content:space-between;min-height:44px;margin-bottom:10px}
-  .logo{font-weight:800;font-size:18px;letter-spacing:-.02em}
-  .logo span{color:var(--brand)}
-  .back{min-height:44px;border:1.5px solid var(--line);background:#fff;border-radius:999px;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;padding:0 16px;font-family:inherit}
-
-  h1{font-size:clamp(26px,7.6vw,32px);line-height:1.38;font-weight:800;letter-spacing:-.035em;margin:24px 0 14px}
-  h1 em{font-style:normal;color:var(--ink);background:linear-gradient(transparent 60%,var(--butter) 60%);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 2px}
-  h2{font-size:23px;line-height:1.42;font-weight:800;letter-spacing:-.03em;margin:20px 0 10px}
-  .lead{font-size:16px;line-height:1.65;color:var(--sub);max-width:34em}
-
-  /* S1 · 메모지로 붙인 대화 목업 */
-  .chat{position:relative;background:var(--card);border-radius:4px;padding:20px 16px 16px;margin:32px 2px 26px;transform:rotate(-1.2deg);box-shadow:var(--shadow)}
-  .chat:before{content:"";position:absolute;left:50%;top:-11px;width:84px;height:22px;margin-left:-42px;background:rgba(255,232,138,.8);transform:rotate(2deg)}
-  .bubble{display:inline-block;background:#EEF1F4;border-radius:14px;padding:10px 14px;font-size:15px;line-height:1.45;margin:4px 0;max-width:88%}
-  .bubble.me{background:var(--butter)}
-  .row{display:flex}.row.r{justify-content:flex-end}
-  .chat .meta{font-size:13px;color:#667085;margin:8px 2px}
-  .chat .stop{font-size:14px;color:var(--brand);font-weight:700;text-align:center;margin-top:10px}
-
-  /* S1 · 1·2·3 단계는 색이 다른 포스트잇 3장 */
-  .steps{list-style:none;margin:8px 2px 28px;display:grid;gap:14px}
-  .steps li{display:flex;gap:12px;align-items:flex-start;padding:16px 16px 16px 14px;font-size:16px;line-height:1.55;border-radius:4px;box-shadow:var(--shadow)}
-  .steps li:nth-child(1){background:var(--butter);transform:rotate(-.8deg)}
-  .steps li:nth-child(2){background:var(--peach);transform:rotate(.7deg)}
-  .steps li:nth-child(3){background:var(--mint);transform:rotate(-.5deg)}
-  .steps b{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px}
-
-  .btn{display:block;width:100%;min-height:var(--tap);border:0;border-radius:12px;padding:15px 18px;font-size:17px;font-weight:700;letter-spacing:-.01em;cursor:pointer;font-family:inherit;transition:transform .08s}
-  .btn:active{transform:scale(.98)}
-  .btn.primary{background:var(--ink);color:#fff}
-  .btn.ghost{background:transparent;color:var(--sub);font-weight:600;font-size:15px;margin-top:8px}
-  .btn.kakao{background:var(--kakao);color:#191600}
-  .btn:disabled{opacity:.4;cursor:default}
-  .sticky{position:sticky;bottom:0;margin:24px -20px 0;padding:14px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 72%,rgba(238,241,244,0))}
-
-  /* S2 · 선택지 3개는 완전히 같은 모양 (색·크기·기울기·강조 동일) */
-  .choices{display:grid;gap:12px;margin-top:24px}
-  .choice{display:flex;gap:16px;align-items:center;text-align:left;min-height:88px;background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:16px 18px;font-family:inherit;color:var(--ink);cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s}
-  .choice:hover,.choice:active{border-color:var(--ink)}
-  .choice .ic{flex:none;display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:8px;background:var(--butter);font-size:28px}
-  .choice strong{display:block;font-size:17px;margin-bottom:4px;color:var(--ink)}
-  .choice small{font-size:14.5px;color:var(--sub);line-height:1.5}
-
-  label.f{display:block;font-size:15px;font-weight:700;margin:24px 0 8px}
-  input[type=text],input[type=email],select{width:100%;min-height:var(--tap);border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:14px 15px;font-size:16px;font-family:inherit;color:var(--ink);outline:none}
-  input[type=text]:focus,input[type=email]:focus,select:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(35,42,59,.14)}
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{min-height:46px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:0 18px;font-size:15px;font-family:inherit;color:var(--ink);cursor:pointer}
-  .chip.on{border-color:var(--ink);background:var(--butter);color:var(--ink);font-weight:700}
-
-  /* S4 · 초대장은 노란 메모지 한 장 */
-  .invite{margin:24px 2px 8px;border-radius:4px;background:var(--butter);color:var(--ink);padding:26px 22px;position:relative;transform:rotate(-1deg);box-shadow:var(--shadow)}
-  .invite:before{content:"";position:absolute;left:50%;top:-11px;width:84px;height:22px;margin-left:-42px;background:rgba(255,255,255,.6);transform:rotate(-2deg)}
-  .invite .tag{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--sub)}
-  .invite .title{font-size:25px;font-weight:800;margin:10px 0 6px;letter-spacing:-.03em}
-  .invite .when{font-size:15px;color:var(--sub)}
-  .dates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0 14px}
-  .date{background:rgba(255,255,255,.7);border-radius:6px;padding:12px 6px;text-align:center;font-size:14px}
-  .date b{display:block;font-size:17px;margin-bottom:4px}
-  .invite .status{font-size:14px;color:var(--sub)}
-  .hint{font-size:14px;color:var(--sub);text-align:center;margin:12px 0 0;line-height:1.55}
-
-  .soon{text-align:center;padding-top:26px}
-  .soon .big{font-size:56px}
-  .soon .lead{margin:0 auto}
-  .box{background:var(--card);border-radius:4px;padding:20px 18px;margin-top:24px;text-align:left;box-shadow:var(--shadow)}
-  .consent{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--sub);line-height:1.55;margin-top:14px}
-  .consent input{flex:none;width:22px;height:22px;margin-top:1px;accent-color:var(--ink)}
-  .done{display:none;text-align:center;padding:22px 0 0;font-size:16px;line-height:1.65}
-  .foot{font-size:13px;color:#667085;text-align:center;margin-top:32px}
-
-  /* ===== 변형: 밤하늘 (남보라 하늘 + 아래쪽 따뜻한 노을빛 + 노란 메모) ===== */
-  :root{
-    --bg:#262A66; --ink:#2A2140; --sub:#4F4767; --line:#D9D2EE;
-    --brand:#B3303F; --card:#FFF6E8;
-    --butter:#FFE58A; --peach:#FFD3B8; --mint:#CDEBDD;
-    --shadow:0 1px 1px rgba(10,8,40,.3), 0 14px 22px -12px rgba(8,6,36,.8);
-    --pg:#FFF3E0; --pg-sub:#D5CFEF;
-  }
-  html,body{color:var(--pg)}
+  html{background:var(--bg)}
+  html,body{color:var(--pg);font-family:Pretendard,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+  body{display:flex;justify-content:center;min-height:100vh;background:transparent}
+  /* 하늘: 별 몇 개 + 아래쪽 따뜻한 노을빛 (화면에 고정) */
   body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     background:
       radial-gradient(1.6px 1.6px at 12% 7%, rgba(255,243,224,.95), transparent 60%),
@@ -161,30 +76,67 @@ window.GOOGLE_FORM = {
       radial-gradient(1.4px 1.4px at 94% 38%, rgba(255,243,224,.6), transparent 60%),
       radial-gradient(ellipse 120% 40% at 50% 112%, rgba(255,176,112,.45), rgba(255,176,112,0) 70%),
       linear-gradient(180deg,#171B45 0%,#262A66 55%,#4B3272 100%)}
-  :focus-visible{outline-color:#FFE58A}
-  .logo{color:var(--pg)}
-  h1,h2{color:var(--pg)}
-  h1 em{color:#FFE58A;background:none}
-  .lead{color:var(--pg-sub)}
-  .hint,.foot{color:var(--pg-sub)}
-  .back{background:rgba(255,255,255,.1);border-color:rgba(255,243,224,.4);color:var(--pg)}
-  .btn.primary{background:#FFE58A;color:#2A2140}
-  .btn.ghost{color:var(--pg-sub)}
-  .done{color:var(--pg)}
-  .soon h2,.soon .lead,.soon .lead b{color:var(--pg)}
-  .soon .lead{color:var(--pg-sub)}
-  .soon .lead b{color:#FFE58A}
-  .chat .meta{color:#6B6483}
-  .chat .stop{color:var(--brand)}
-  .bubble{background:#EDE8F7}
-  .sticky{background:linear-gradient(to top,#3E2E6C 72%,rgba(62,46,108,0))}
-  .choice{background:#FFF6E8;border-color:transparent}
-  .choice:hover,.choice:active{border-color:#FFE58A}
-  .choice small{color:var(--sub)}
+  .app{width:100%;max-width:440px;min-height:100vh;padding:20px 20px 40px;position:relative}
+  .screen{display:none}
+  .screen.on{display:block;animation:fade .25s ease-out}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){ .screen.on{animation:none} .btn{transition:none} }
 
-  body{background:transparent}
-  /* 밝은 메모지/카드 안쪽 글자는 어둡게 (페이지 기본 글자색이 밝아서 따로 지정) */
-  .chat,.steps li,.invite,.box,.choice{color:var(--ink)}
+  :focus-visible{outline:3px solid #FFE58A;outline-offset:3px}
+
+  .top{display:flex;align-items:center;justify-content:space-between;min-height:44px;margin-bottom:10px}
+  .logo{font-weight:800;font-size:18px;letter-spacing:-.02em;color:var(--pg)}
+  .logo span{color:#FFE58A}
+  .back{min-height:44px;border:1.5px solid rgba(255,243,224,.4);background:rgba(255,255,255,.1);border-radius:999px;font-size:15px;font-weight:600;color:var(--pg);cursor:pointer;padding:0 16px;font-family:inherit}
+
+  h1{font-size:clamp(26px,7.6vw,32px);line-height:1.38;font-weight:800;letter-spacing:-.035em;margin:24px 0 14px;color:var(--pg)}
+  h1 em{font-style:normal;color:#FFE58A}
+  h2{font-size:23px;line-height:1.42;font-weight:800;letter-spacing:-.03em;margin:20px 0 10px;color:var(--pg)}
+  .lead{font-size:16px;line-height:1.65;color:var(--pg-sub);max-width:34em}
+
+  /* S1 · 페인포인트: 색이 다른 포스트잇 5장 */
+  .pain-title{font-size:21px;margin:40px 0 4px}
+  .pains{list-style:none;display:grid;gap:14px;margin:16px 2px 0}
+  .pains li{padding:17px 18px;border-radius:4px;box-shadow:var(--shadow);font-size:16px;line-height:1.6;font-weight:500;color:var(--ink)}
+  .pains mark{background:none;color:inherit;font-weight:800;text-decoration:underline;text-decoration-color:var(--brand);text-decoration-thickness:3px;text-underline-offset:5px;text-decoration-skip-ink:none}
+  .pains li:nth-child(1){background:var(--butter);transform:rotate(-.8deg)}
+  .pains li:nth-child(2){background:var(--peach);transform:rotate(.7deg)}
+  .pains li:nth-child(3){background:var(--mint);transform:rotate(-.5deg)}
+  .pains li:nth-child(4){background:var(--lav);transform:rotate(.8deg)}
+  .pains li:nth-child(5){background:var(--card);transform:rotate(-.6deg)}
+  .closing{font-size:19px;line-height:1.55;font-weight:800;letter-spacing:-.025em;color:var(--pg);margin:36px 0 0;text-align:center}
+
+  .btn{display:block;width:100%;min-height:var(--tap);border:0;border-radius:12px;padding:15px 18px;font-size:17px;font-weight:700;letter-spacing:-.01em;cursor:pointer;font-family:inherit;transition:transform .08s}
+  .btn:active{transform:scale(.98)}
+  .btn.primary{background:#FFE58A;color:var(--ink)}
+  .btn.ghost{background:transparent;color:var(--pg-sub);font-weight:600;font-size:15px;margin-top:8px}
+  .btn:disabled{opacity:.4;cursor:default}
+  .sticky{position:sticky;bottom:0;margin:20px -20px 0;padding:14px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to top,#3E2E6C 72%,rgba(62,46,108,0))}
+
+  /* S2 · 선택지 3개는 완전히 같은 모양 (색·크기·기울기·강조 동일, 높이도 항상 같게) */
+  .choices{display:grid;grid-auto-rows:1fr;gap:12px;margin-top:24px}
+  .choice{display:grid;grid-template-columns:48px 1fr;column-gap:14px;row-gap:8px;align-items:center;align-content:center;text-align:left;background:var(--card);border:1.5px solid transparent;border-radius:6px;padding:16px 18px;font-family:inherit;color:var(--ink);cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s}
+  .choice:hover,.choice:active{border-color:#FFE58A}
+  .choice>span:last-child{display:contents}
+  .choice .ic{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:8px;background:var(--butter);font-size:26px}
+  .choice strong{font-size:17px;color:var(--ink)}
+  .choice small{grid-column:1 / -1;font-size:14.5px;color:var(--sub);line-height:1.55}
+
+  label.f{display:block;font-size:15px;font-weight:700;margin:24px 0 8px}
+  input[type=text],input[type=email]{width:100%;min-height:var(--tap);border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:14px 15px;font-size:16px;font-family:inherit;color:var(--ink);outline:none}
+  input[type=text]:focus,input[type=email]:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(42,33,64,.18)}
+
+  /* S3 · 준비 중 */
+  .soon{text-align:center;padding-top:26px}
+  .soon .big{font-size:56px}
+  .soon .lead{margin:0 auto}
+  .soon .lead b{color:#FFE58A}
+  .box{background:var(--card);border-radius:4px;padding:20px 18px;margin-top:24px;text-align:left;box-shadow:var(--shadow);color:var(--ink)}
+  .consent{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--sub);line-height:1.55;margin-top:14px}
+  .consent input{flex:none;width:22px;height:22px;margin-top:1px;accent-color:var(--ink)}
+  .box .btn.primary{background:var(--ink);color:#fff}
+  .done{display:none;text-align:center;padding:22px 0 0;font-size:16px;line-height:1.65;color:var(--pg)}
+  .foot{font-size:13px;color:var(--pg-sub);text-align:center;margin-top:32px}
 </style>
 </head>
 <body>
@@ -197,19 +149,16 @@ window.GOOGLE_FORM = {
     <h1 id="headline"></h1>
     <p class="lead" id="sublead"></p>
 
-    <div class="chat" aria-hidden="true">
-      <div class="row r"><span class="bubble me">우리 진짜 연말에 한번 보자!! 언제 돼?</span></div>
-      <div class="row"><span class="bubble">난 주말 다 돼</span></div>
-      <div class="row"><span class="bubble">나 12월 일정표 아직 안 나옴ㅠ</span></div>
-      <div class="meta">· · · 안 읽음 2</div>
-      <div class="stop">⏸ 3일째 여기서 멈춤</div>
-    </div>
-
-    <ul class="steps">
-      <li><b>1</b><span>링크 하나 만들어서 단톡방에 던지기 <br><small style="color:var(--sub)">가입 없이 닉네임만 쓰고 바로 참여</small></span></li>
-      <li><b>2</b><span>친구들은 날짜 카드에 👍 🙅 🤔 탭하면 끝</span></li>
-      <li><b>3</b><span>답한 사람만으로 <b style="background:none;color:var(--brand);min-width:0;height:auto">best 날짜 TOP 3</b>가 자동으로 정리돼요</span></li>
+    <h2 class="pain-title">이런 적 있지 않으셨나요?</h2>
+    <ul class="pains">
+      <li>"언제 돼?" 물어봤는데 <mark>답이 하나도 안 와요</mark></li>
+      <li>가능한 날을 먼저 안 말해줘서 <mark>하나하나 물어봐야 해요</mark></li>
+      <li>"나 일정표 아직 안 나옴"에서 <mark>일주일째 멈춰 있어요</mark></li>
+      <li>카톡 투표를 올렸는데 <mark>대화에 묻혀서 절반만 했어요</mark></li>
+      <li>"언제 한번 보자"만 하다가 <mark>결국 흐지부지됐어요</mark></li>
     </ul>
+
+    <p class="closing">2026년이 가기 전에,<br>오랜만인 친구들과 진짜 만나요</p>
 
     <div class="sticky">
       <button class="btn primary" id="go-s2">약속 잡으러 가기</button>
@@ -225,78 +174,21 @@ window.GOOGLE_FORM = {
     <div class="choices">
       <button class="choice" data-feature="date">
         <span class="ic">📅</span>
-        <span><strong>날짜 모으기</strong><small>다들 언제 되는지 모으고, 겹치는 날 찾기</small></span>
+        <span><strong>날짜 모으기</strong><small>"언제 돼?"에 답이 안 와도<br>되는 날부터 먼저 정리해줘요</small></span>
       </button>
       <button class="choice" data-feature="place">
         <span class="ic">📍</span>
-        <span><strong>장소 정하기</strong><small>다 같이 오기 편한 동네 찾기</small></span>
+        <span><strong>장소 정하기</strong><small>"어디서 볼까?"에서 멈추면<br>다 오기 편한 동네를 찾아줘요</small></span>
       </button>
       <button class="choice" data-feature="menu">
         <span class="ic">🍽</span>
-        <span><strong>메뉴 고르기</strong><small>"아무거나" 말고 진짜 정하기</small></span>
+        <span><strong>메뉴 고르기</strong><small>"아무거나"만 돌고 돌 때<br>후보를 좁혀서 같이 골라줘요</small></span>
       </button>
     </div>
   </section>
 
-  <!-- ================= S3 링크 만들기 ================= -->
+  <!-- ================= S3 준비 중 ================= -->
   <section class="screen" id="s3">
-    <div class="top"><button class="back" data-back="s2">← 이전</button><div class="logo" data-brand></div></div>
-    <h2>약속 링크 만들기</h2>
-    <p class="lead">30초면 돼요. 친구들은 링크만 누르면 바로 참여해요.</p>
-
-    <label class="f" for="f-name">약속 이름</label>
-    <input type="text" id="f-name" maxlength="30" placeholder="예: 고딩 친구들 송년회">
-
-    <label class="f">언제쯤 만날까요?</label>
-    <div class="chips" id="f-period">
-      <button class="chip" type="button">12월 첫째 주</button>
-      <button class="chip" type="button">12월 둘째 주</button>
-      <button class="chip" type="button">12월 셋째 주</button>
-      <button class="chip" type="button">12월 넷째 주</button>
-      <button class="chip" type="button">1월 초</button>
-      <button class="chip" type="button">아직 몰라요</button>
-    </div>
-
-    <label class="f">몇 명이 모이나요?</label>
-    <div class="chips" id="f-size">
-      <button class="chip" type="button">2명</button>
-      <button class="chip" type="button">3명</button>
-      <button class="chip" type="button">4명</button>
-      <button class="chip" type="button">5명</button>
-      <button class="chip" type="button">6명 이상</button>
-    </div>
-
-    <div class="sticky">
-      <button class="btn primary" id="go-s4" disabled>초대장 만들기</button>
-    </div>
-  </section>
-
-  <!-- ================= S4 초대장 미리보기 ================= -->
-  <section class="screen" id="s4">
-    <div class="top"><button class="back" data-back="s3">← 수정</button><div class="logo" data-brand></div></div>
-    <h2>초대장이 준비됐어요 💌</h2>
-    <p class="lead">단톡방에 공유하면 친구들이 바로 답할 수 있어요.</p>
-
-    <div class="invite">
-      <div class="tag">INVITATION</div>
-      <div class="title" id="p-name">고딩 친구들 송년회</div>
-      <div class="when"><span id="p-period">12월 셋째 주</span> · <span id="p-size">4명</span></div>
-      <div class="dates">
-        <div class="date"><b>?</b>후보 1</div>
-        <div class="date"><b>?</b>후보 2</div>
-        <div class="date"><b>?</b>후보 3</div>
-      </div>
-      <div class="status">👍 🙅 🤔 로 답하면 best 날짜가 정리돼요</div>
-    </div>
-
-    <div class="sticky">
-      <button class="btn kakao" id="share">카카오톡으로 공유하기</button>
-      <p class="hint">답한 사람이 일부여도 날짜가 정리되고,<br>남은 친구에겐 그 날짜만 물어봐요.</p>
-    </div>
-  </section>
-
-  <!-- ================= S5 준비 중 ================= -->
-  <section class="screen" id="s5">
     <div class="top"><button class="back" id="restart">← 처음으로</button><div class="logo" data-brand></div></div>
     <div class="soon">
       <div class="big">🛠</div>
@@ -350,7 +242,7 @@ window.GOOGLE_FORM = {
   document.getElementById("sublead").innerHTML = c.s;
 
   // ---------- 이벤트 기록 ----------
-  var state = { feature: "", formStarted: false };
+  var state = { feature: "" };
   function track(name, extra){
     var p = Object.assign({ variant: variant, source: source }, extra || {});
     if (window.gtag) gtag("event", name, p);
@@ -390,8 +282,9 @@ window.GOOGLE_FORM = {
     show("s2");
   });
 
-  // S2 기능 선택
+  // S2 기능 선택 → 3개 모두 바로 준비 중 화면(S3)으로
   var SOON = {
+    date:  ["날짜 모으기는 준비 중이에요!", "다들 되는 날을 모아 best 날짜로 정리해주는 기능을 만들고 있어요.<br><b>12월 초 오픈</b> 때 알려드릴게요."],
     place: ["장소 추천은 준비 중이에요!", "다 같이 오기 편한 동네를 찾아주는 기능을 만들고 있어요.<br><b>12월 초 오픈</b> 때 알려드릴게요."],
     menu:  ["메뉴 고르기는 준비 중이에요!", "'아무거나' 없이 정하는 기능을 만들고 있어요.<br><b>12월 초 오픈</b> 때 알려드릴게요."]
   };
@@ -399,57 +292,16 @@ window.GOOGLE_FORM = {
     b.addEventListener("click", function(){
       state.feature = b.getAttribute("data-feature");
       track("select_feature", { feature: state.feature });
-      if (state.feature === "date") { show("s3"); return; }
       document.getElementById("soon-title").textContent = SOON[state.feature][0];
       document.getElementById("soon-desc").innerHTML = SOON[state.feature][1];
-      show("s5");
+      show("s3");
     });
-  });
-
-  // S3 입력
-  var nameEl = document.getElementById("f-name");
-  var picked = { period: "", size: "" };
-  function startForm(){
-    if (!state.formStarted){ state.formStarted = true; track("start_form"); }
-  }
-  function validate(){
-    document.getElementById("go-s4").disabled = !(nameEl.value.trim() && picked.period && picked.size);
-  }
-  nameEl.addEventListener("focus", startForm);
-  nameEl.addEventListener("input", validate);
-  [["f-period","period"],["f-size","size"]].forEach(function(pair){
-    var wrap = document.getElementById(pair[0]);
-    wrap.querySelectorAll(".chip").forEach(function(ch){
-      ch.addEventListener("click", function(){
-        startForm();
-        wrap.querySelectorAll(".chip").forEach(function(x){ x.classList.remove("on"); });
-        ch.classList.add("on");
-        picked[pair[1]] = ch.textContent;
-        validate();
-      });
-    });
-  });
-
-  // S3 → S4
-  document.getElementById("go-s4").addEventListener("click", function(){
-    track("complete_form", { period: picked.period, group_size: picked.size });
-    document.getElementById("p-name").textContent = nameEl.value.trim();
-    document.getElementById("p-period").textContent = picked.period;
-    document.getElementById("p-size").textContent = picked.size;
-    show("s4");
-  });
-
-  // S4 공유 (⭐ 핵심 지표)
-  document.getElementById("share").addEventListener("click", function(){
-    track("click_share", { group_size: picked.size });
-    resetSoon();
-    show("s5");
   });
 
   document.getElementById("restart").addEventListener("click", restart);
   document.getElementById("restart2").addEventListener("click", restart);
 
-  // S5 알림 신청 + 한 줄 답변
+  // S3 알림 신청 + 한 줄 답변
   var form = document.getElementById("alert-form");
   form.addEventListener("submit", function(e){
     e.preventDefault();
