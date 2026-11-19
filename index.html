@@ -111,7 +111,9 @@ window.GOOGLE_FORM = {
   .btn.primary{background:#FFE58A;color:var(--ink)}
   .btn.ghost{background:transparent;color:var(--pg-sub);font-weight:600;font-size:15px;margin-top:8px}
   .btn:disabled{opacity:.4;cursor:default}
-  .sticky{position:sticky;bottom:0;margin:20px -20px 0;padding:14px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to top,#3E2E6C 72%,rgba(62,46,108,0))}
+  /* 버튼 뒤에는 색을 깔지 않는다(하늘 그라데이션과 따로 놀지 않게). 뒤로 지나가는 카드만 살짝 흐리게 */
+  .sticky{position:sticky;bottom:0;isolation:isolate;margin:20px -20px 0;padding:14px 20px calc(16px + env(safe-area-inset-bottom))}
+  .sticky::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);-webkit-mask-image:linear-gradient(to top,#000 55%,transparent);mask-image:linear-gradient(to top,#000 55%,transparent)}
 
   /* S2 · 선택지 3개는 완전히 같은 모양 (색·크기·기울기·강조 동일, 높이도 항상 같게) */
   .choices{display:grid;grid-auto-rows:1fr;gap:12px;margin-top:24px}
