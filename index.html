@@ -50,81 +50,141 @@ window.GOOGLE_FORM = {
 </script>
 
 <style>
+  /* 디자인 방향: 포스트잇 벽 — 겨울 아침 회청 바탕 위에 손으로 붙인 메모들 */
   :root{
-    --bg:#FFF8F1; --ink:#1F1B2E; --sub:#6B6478; --line:#EDE4DA;
-    --brand:#E8505B; --brand-soft:#FDE3E4; --green:#2F9E6E; --card:#FFFFFF;
+    --bg:#EEF1F4; --ink:#232A3B; --sub:#4F5668; --line:#CBD2DC;
+    --brand:#B8323B; --brand-soft:#FFE0D2; --green:#2F9E6E; --card:#FFFFFF;
     --kakao:#FEE500;
+    --butter:#FFE88A; --peach:#FFD3B8; --mint:#C8EBD8;
+    --shadow:0 1px 1px rgba(35,42,59,.10), 0 10px 18px -12px rgba(35,42,59,.45);
+    --tap:52px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  html,body{background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
   body{display:flex;justify-content:center;min-height:100vh}
-  .app{width:100%;max-width:440px;min-height:100vh;padding:20px 22px 40px;position:relative}
-  .screen{display:none;animation:fade .35s ease}
-  .screen.on{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .app{width:100%;max-width:440px;min-height:100vh;padding:20px 20px 40px;position:relative}
+  .screen{display:none}
+  .screen.on{display:block;animation:fade .25s ease-out}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){ .screen.on{animation:none} .btn{transition:none} }
 
-  .top{display:flex;align-items:center;justify-content:space-between;height:40px;margin-bottom:12px}
-  .logo{font-weight:800;font-size:18px;letter-spacing:-.3px}
+  :focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+
+  .top{display:flex;align-items:center;justify-content:space-between;min-height:44px;margin-bottom:10px}
+  .logo{font-weight:800;font-size:18px;letter-spacing:-.02em}
   .logo span{color:var(--brand)}
-  .back{border:1px solid var(--line);background:#fff;border-radius:999px;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;padding:7px 14px;font-family:inherit}
+  .back{min-height:44px;border:1.5px solid var(--line);background:#fff;border-radius:999px;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;padding:0 16px;font-family:inherit}
 
-  h1{font-size:28px;line-height:1.32;font-weight:800;letter-spacing:-.6px;margin:28px 0 14px}
-  h1 em{font-style:normal;color:var(--brand)}
-  h2{font-size:22px;line-height:1.4;font-weight:800;letter-spacing:-.4px;margin:18px 0 8px}
-  .lead{font-size:16px;line-height:1.6;color:var(--sub)}
+  h1{font-size:clamp(26px,7.6vw,32px);line-height:1.38;font-weight:800;letter-spacing:-.035em;margin:24px 0 14px}
+  h1 em{font-style:normal;color:var(--ink);background:linear-gradient(transparent 60%,var(--butter) 60%);-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 2px}
+  h2{font-size:23px;line-height:1.42;font-weight:800;letter-spacing:-.03em;margin:20px 0 10px}
+  .lead{font-size:16px;line-height:1.65;color:var(--sub);max-width:34em}
 
-  .chat{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin:26px 0 22px}
-  .bubble{display:inline-block;background:#F2EEF7;border-radius:16px;padding:9px 13px;font-size:14px;margin:4px 0;max-width:85%}
-  .bubble.me{background:var(--brand-soft)}
+  /* S1 · 메모지로 붙인 대화 목업 */
+  .chat{position:relative;background:var(--card);border-radius:4px;padding:20px 16px 16px;margin:32px 2px 26px;transform:rotate(-1.2deg);box-shadow:var(--shadow)}
+  .chat:before{content:"";position:absolute;left:50%;top:-11px;width:84px;height:22px;margin-left:-42px;background:rgba(255,232,138,.8);transform:rotate(2deg)}
+  .bubble{display:inline-block;background:#EEF1F4;border-radius:14px;padding:10px 14px;font-size:15px;line-height:1.45;margin:4px 0;max-width:88%}
+  .bubble.me{background:var(--butter)}
   .row{display:flex}.row.r{justify-content:flex-end}
-  .chat .meta{font-size:12px;color:#A39DAE;margin:6px 2px}
-  .chat .stop{font-size:13px;color:var(--brand);font-weight:700;text-align:center;margin-top:10px}
+  .chat .meta{font-size:13px;color:#667085;margin:8px 2px}
+  .chat .stop{font-size:14px;color:var(--brand);font-weight:700;text-align:center;margin-top:10px}
 
-  .steps{list-style:none;margin:8px 0 28px}
-  .steps li{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px dashed var(--line);font-size:15px;line-height:1.5}
-  .steps li:last-child{border:0}
-  .steps b{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px}
+  /* S1 · 1·2·3 단계는 색이 다른 포스트잇 3장 */
+  .steps{list-style:none;margin:8px 2px 28px;display:grid;gap:14px}
+  .steps li{display:flex;gap:12px;align-items:flex-start;padding:16px 16px 16px 14px;font-size:16px;line-height:1.55;border-radius:4px;box-shadow:var(--shadow)}
+  .steps li:nth-child(1){background:var(--butter);transform:rotate(-.8deg)}
+  .steps li:nth-child(2){background:var(--peach);transform:rotate(.7deg)}
+  .steps li:nth-child(3){background:var(--mint);transform:rotate(-.5deg)}
+  .steps b{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px}
 
-  .btn{display:block;width:100%;border:0;border-radius:16px;padding:17px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit;transition:transform .08s}
+  .btn{display:block;width:100%;min-height:var(--tap);border:0;border-radius:12px;padding:15px 18px;font-size:17px;font-weight:700;letter-spacing:-.01em;cursor:pointer;font-family:inherit;transition:transform .08s}
   .btn:active{transform:scale(.98)}
-  .btn.primary{background:var(--brand);color:#fff}
+  .btn.primary{background:var(--ink);color:#fff}
   .btn.ghost{background:transparent;color:var(--sub);font-weight:600;font-size:15px;margin-top:8px}
   .btn.kakao{background:var(--kakao);color:#191600}
   .btn:disabled{opacity:.4;cursor:default}
-  .sticky{position:sticky;bottom:16px;margin-top:24px}
+  .sticky{position:sticky;bottom:0;margin:24px -20px 0;padding:14px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 72%,rgba(238,241,244,0))}
 
-  .choices{display:grid;gap:12px;margin-top:22px}
-  .choice{display:flex;gap:14px;align-items:center;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px;font-family:inherit;cursor:pointer;transition:border-color .15s}
-  .choice:hover{border-color:var(--brand)}
-  .choice .ic{font-size:28px}
-  .choice strong{display:block;font-size:17px;margin-bottom:3px;color:var(--ink)}
-  .choice small{font-size:14px;color:var(--sub);line-height:1.4}
+  /* S2 · 선택지 3개는 완전히 같은 모양 (색·크기·기울기·강조 동일) */
+  .choices{display:grid;gap:12px;margin-top:24px}
+  .choice{display:flex;gap:16px;align-items:center;text-align:left;min-height:88px;background:var(--card);border:1.5px solid var(--line);border-radius:6px;padding:16px 18px;font-family:inherit;color:var(--ink);cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s}
+  .choice:hover,.choice:active{border-color:var(--ink)}
+  .choice .ic{flex:none;display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:8px;background:var(--butter);font-size:28px}
+  .choice strong{display:block;font-size:17px;margin-bottom:4px;color:var(--ink)}
+  .choice small{font-size:14.5px;color:var(--sub);line-height:1.5}
 
-  label.f{display:block;font-size:14px;font-weight:700;margin:22px 0 8px}
-  input[type=text],input[type=email],select{width:100%;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:15px;font-size:16px;font-family:inherit;color:var(--ink);outline:none}
-  input:focus,select:focus{border-color:var(--brand)}
+  label.f{display:block;font-size:15px;font-weight:700;margin:24px 0 8px}
+  input[type=text],input[type=email],select{width:100%;min-height:var(--tap);border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:14px 15px;font-size:16px;font-family:inherit;color:var(--ink);outline:none}
+  input[type=text]:focus,input[type=email]:focus,select:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(35,42,59,.14)}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:10px 16px;font-size:15px;font-family:inherit;cursor:pointer}
-  .chip.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:700}
+  .chip{min-height:46px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:0 18px;font-size:15px;font-family:inherit;color:var(--ink);cursor:pointer}
+  .chip.on{border-color:var(--ink);background:var(--butter);color:var(--ink);font-weight:700}
 
-  .invite{margin:22px 0 6px;border-radius:24px;overflow:hidden;background:linear-gradient(160deg,#2B2347 0%,#4B2E5C 55%,#E8505B 140%);color:#fff;padding:26px 22px;position:relative;box-shadow:0 12px 30px rgba(43,35,71,.25)}
-  .invite:after{content:"✦  ❄  ✦";position:absolute;right:18px;top:16px;opacity:.5;letter-spacing:4px;font-size:12px}
-  .invite .tag{font-size:12px;opacity:.75;letter-spacing:1px}
-  .invite .title{font-size:24px;font-weight:800;margin:10px 0 4px;letter-spacing:-.4px;word-break:keep-all}
-  .invite .when{font-size:15px;opacity:.85}
+  /* S4 · 초대장은 노란 메모지 한 장 */
+  .invite{margin:24px 2px 8px;border-radius:4px;background:var(--butter);color:var(--ink);padding:26px 22px;position:relative;transform:rotate(-1deg);box-shadow:var(--shadow)}
+  .invite:before{content:"";position:absolute;left:50%;top:-11px;width:84px;height:22px;margin-left:-42px;background:rgba(255,255,255,.6);transform:rotate(-2deg)}
+  .invite .tag{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--sub)}
+  .invite .title{font-size:25px;font-weight:800;margin:10px 0 6px;letter-spacing:-.03em}
+  .invite .when{font-size:15px;color:var(--sub)}
   .dates{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0 14px}
-  .date{background:rgba(255,255,255,.12);border-radius:12px;padding:10px 6px;text-align:center;font-size:13px}
-  .date b{display:block;font-size:16px;margin-bottom:4px}
-  .invite .status{font-size:13px;opacity:.8}
-  .hint{font-size:13px;color:var(--sub);text-align:center;margin:10px 0 0;line-height:1.5}
+  .date{background:rgba(255,255,255,.7);border-radius:6px;padding:12px 6px;text-align:center;font-size:14px}
+  .date b{display:block;font-size:17px;margin-bottom:4px}
+  .invite .status{font-size:14px;color:var(--sub)}
+  .hint{font-size:14px;color:var(--sub);text-align:center;margin:12px 0 0;line-height:1.55}
 
   .soon{text-align:center;padding-top:26px}
   .soon .big{font-size:56px}
-  .box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:22px;text-align:left}
-  .consent{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--sub);line-height:1.5;margin-top:12px}
-  .consent input{margin-top:3px;accent-color:var(--brand)}
-  .done{display:none;text-align:center;padding:22px 0 0;font-size:15px;line-height:1.6}
-  .foot{font-size:12px;color:#A39DAE;text-align:center;margin-top:30px}
+  .soon .lead{margin:0 auto}
+  .box{background:var(--card);border-radius:4px;padding:20px 18px;margin-top:24px;text-align:left;box-shadow:var(--shadow)}
+  .consent{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--sub);line-height:1.55;margin-top:14px}
+  .consent input{flex:none;width:22px;height:22px;margin-top:1px;accent-color:var(--ink)}
+  .done{display:none;text-align:center;padding:22px 0 0;font-size:16px;line-height:1.65}
+  .foot{font-size:13px;color:#667085;text-align:center;margin-top:32px}
+
+  /* ===== 변형: 밤하늘 (남보라 하늘 + 아래쪽 따뜻한 노을빛 + 노란 메모) ===== */
+  :root{
+    --bg:#262A66; --ink:#2A2140; --sub:#4F4767; --line:#D9D2EE;
+    --brand:#B3303F; --card:#FFF6E8;
+    --butter:#FFE58A; --peach:#FFD3B8; --mint:#CDEBDD;
+    --shadow:0 1px 1px rgba(10,8,40,.3), 0 14px 22px -12px rgba(8,6,36,.8);
+    --pg:#FFF3E0; --pg-sub:#D5CFEF;
+  }
+  html,body{color:var(--pg)}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(1.6px 1.6px at 12% 7%, rgba(255,243,224,.95), transparent 60%),
+      radial-gradient(1.2px 1.2px at 30% 14%, rgba(255,243,224,.8), transparent 60%),
+      radial-gradient(1.8px 1.8px at 78% 6%, rgba(255,243,224,.95), transparent 60%),
+      radial-gradient(1.2px 1.2px at 90% 19%, rgba(255,243,224,.7), transparent 60%),
+      radial-gradient(1.4px 1.4px at 55% 4%, rgba(255,243,224,.85), transparent 60%),
+      radial-gradient(1.2px 1.2px at 6% 30%, rgba(255,243,224,.6), transparent 60%),
+      radial-gradient(1.4px 1.4px at 94% 38%, rgba(255,243,224,.6), transparent 60%),
+      radial-gradient(ellipse 120% 40% at 50% 112%, rgba(255,176,112,.45), rgba(255,176,112,0) 70%),
+      linear-gradient(180deg,#171B45 0%,#262A66 55%,#4B3272 100%)}
+  :focus-visible{outline-color:#FFE58A}
+  .logo{color:var(--pg)}
+  h1,h2{color:var(--pg)}
+  h1 em{color:#FFE58A;background:none}
+  .lead{color:var(--pg-sub)}
+  .hint,.foot{color:var(--pg-sub)}
+  .back{background:rgba(255,255,255,.1);border-color:rgba(255,243,224,.4);color:var(--pg)}
+  .btn.primary{background:#FFE58A;color:#2A2140}
+  .btn.ghost{color:var(--pg-sub)}
+  .done{color:var(--pg)}
+  .soon h2,.soon .lead,.soon .lead b{color:var(--pg)}
+  .soon .lead{color:var(--pg-sub)}
+  .soon .lead b{color:#FFE58A}
+  .chat .meta{color:#6B6483}
+  .chat .stop{color:var(--brand)}
+  .bubble{background:#EDE8F7}
+  .sticky{background:linear-gradient(to top,#3E2E6C 72%,rgba(62,46,108,0))}
+  .choice{background:#FFF6E8;border-color:transparent}
+  .choice:hover,.choice:active{border-color:#FFE58A}
+  .choice small{color:var(--sub)}
+
+  body{background:transparent}
+  /* 밝은 메모지/카드 안쪽 글자는 어둡게 (페이지 기본 글자색이 밝아서 따로 지정) */
+  .chat,.steps li,.invite,.box,.choice{color:var(--ink)}
 </style>
 </head>
 <body>
